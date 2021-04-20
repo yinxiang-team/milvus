@@ -117,7 +117,13 @@ class DBImpl : public DB, public server::CacheConfigHandler, public server::Engi
     DeleteVector(const std::string& collection_id, IDNumber vector_id) override;
 
     Status
+    DeleteVector(const std::string& collection_id, IDNumber vector_id, const std::vector<std::string>& partition_tags) override;
+
+    Status
     DeleteVectors(const std::string& collection_id, IDNumbers vector_ids) override;
+
+    Status
+    DeleteVectors(const std::string& collection_id, IDNumbers vector_ids, const std::vector<std::string>& partition_tags) override;
 
     Status
     Flush(const std::string& collection_id) override;
