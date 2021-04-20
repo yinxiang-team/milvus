@@ -274,6 +274,11 @@ TaskTable::PickToExecute(uint64_t limit) {
     return indexes;
 }
 
+/**
+ * @brief 
+ * Put the `TackPtr` into `table_` to waiting schedule/executing, which is an 
+ * `TaskTableItemPtr` pointer, which is an alias of `std::shared_ptr<TaskTableItem>`.
+ */
 void
 TaskTable::Put(TaskPtr task, TaskTableItemPtr from) {
     auto item = std::make_shared<TaskTableItem>(std::move(from));

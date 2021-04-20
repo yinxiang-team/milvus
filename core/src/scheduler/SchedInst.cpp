@@ -115,10 +115,12 @@ load_simple_config() {
 void
 StartSchedulerService() {
     load_simple_config();
+    /// Optimizer performance with hardward such as GPU/FPGA.
     OptimizerInst::GetInstance()->Init();
     ResMgrInst::GetInstance()->Start();
+    /// Take charge of main schedule jobs.
     SchedInst::GetInstance()->Start();
-    JobMgrInst::GetInstance()->Start();
+    JobMgrInst::GetInstance()->Start(); 
     CPUBuilderInst::GetInstance()->Start();
 }
 

@@ -31,6 +31,9 @@ namespace scheduler {
 JobMgr::JobMgr(ResourceMgrPtr res_mgr) : res_mgr_(std::move(res_mgr)) {
 }
 
+/**
+ * @brief Run `obMgr::worker_function` as a thread. 
+ */
 void
 JobMgr::Start() {
     if (not running_) {
@@ -66,10 +69,23 @@ JobMgr::Put(const JobPtr& job) {
     cv_.notify_one();
 }
 
+/**
+ * @brief
+ * The main processing logic about how milvus manage jobs. Each job is abtracted 
+ * as an `JobPtr`, and each new-coming job will be put into an `std::queue<JobPtr>` 
+ * queue(`queue_`) to waiting for schedule.
+ */
 void
 JobMgr::worker_function() {
     SetThreadName("jobmgr_thread");
+    /// When one thread starts job-schedule process, there are following detail
+    /// steps.
     while (running_) {
+        /// Lock the job-queue, until:
+        ///     1. The job-queue contains at least one waiting job.
+        ///     2. Finished getting the `front` job instance from job-queue and 
+        ///        `pop` that job instance out from job queue, this is for 
+        ///        keeping thread-safty.
         std::unique_lock<std::mutex> lock(mutex_);
         cv_.wait(lock, [this] { return !queue_.empty(); });
         auto job = queue_.front();
@@ -79,10 +95,13 @@ JobMgr::worker_function() {
             break;
         }
 
+        /// Builds tasks based on current-scheduling job instance.
         auto tasks = build_task(job);
 
         // TODO(zhiru): if the job is search by ids, pass any task where the ids don't exist
         auto search_job = std::dynamic_pointer_cast<SearchJob>(job);
+        /// If `search_job` is not `NULL`, which means current job is an search job, then 
+        /// doing followding specific handling. 
         if (search_job != nullptr) {
             search_job->GetResultIds().resize(search_job->nq(), -1);
             search_job->GetResultDistances().resize(search_job->nq(), std::numeric_limits<float>::max());
@@ -127,20 +146,28 @@ JobMgr::worker_function() {
         //        }
 
         for (auto& task : tasks) {
+            /// Only handling search and build task. 
             OptimizerInst::GetInstance()->Run(task);
         }
 
         for (auto& task : tasks) {
+            /// Only handling search and build task.
             calculate_path(res_mgr_, task);
         }
 
         // disk resources NEVER be empty.
+        /// `disk` is an `ResourceWPtr` object, which is the first element in 
+        /// an `std::vector<ResourceWPtr>` object, and `ResourceWPtr` is alias 
+        /// of `std::weak_ptr<Resource>`.
         if (auto disk = res_mgr_->GetDiskResources()[0].lock()) {
             // if (auto disk = res_mgr_->GetCpuResources()[0].lock()) {
             for (auto& task : tasks) {
                 if (task->Type() == TaskType::BuildIndexTask && task->path().Last() == "cpu") {
                     CPUBuilderInst::GetInstance()->Put(task);
                 } else {
+                    /// `disk->task_table()` returns an `TaskTable&`.
+                    /// The following codes put each `TackPtr` into a queue waiting for
+                    /// scheduling/executing. 
                     disk->task_table().Put(task, nullptr);
                 }
             }
@@ -148,6 +175,10 @@ JobMgr::worker_function() {
     }
 }
 
+/**
+ * @brief
+ * Build sevetal `TaskPtr` by decomposing `JobPtr` into several small tasks. 
+ */
 std::vector<TaskPtr>
 JobMgr::build_task(const JobPtr& job) {
     return TaskCreator::Create(job);

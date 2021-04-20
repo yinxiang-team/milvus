@@ -17,6 +17,12 @@
 namespace milvus {
 namespace scheduler {
 
+
+/**
+ * @brief 
+ * Build several `TaskPtr` based on `JobPtr`. Now there three types 
+ * of task/job, corresponding to search/delete/build.
+ */
 std::vector<TaskPtr>
 TaskCreator::Create(const JobPtr& job) {
     switch (job->type()) {
@@ -36,6 +42,11 @@ TaskCreator::Create(const JobPtr& job) {
     }
 }
 
+/**
+ * @brief
+ * Decompose an `SearchJobPtr` into several searching-tasks, each one 
+ * corresponding to one target index file.
+ */
 std::vector<TaskPtr>
 TaskCreator::Create(const SearchJobPtr& job) {
     std::vector<TaskPtr> tasks;
@@ -48,6 +59,10 @@ TaskCreator::Create(const SearchJobPtr& job) {
     return tasks;
 }
 
+/**
+ * @brief
+ * Build an `XDeletaTask` based on `DeleteJobPtr`. 
+ */
 std::vector<TaskPtr>
 TaskCreator::Create(const DeleteJobPtr& job) {
     std::vector<TaskPtr> tasks;

@@ -141,6 +141,9 @@ Server::Daemonize() {
     }
 }
 
+/**
+ * @brief Starts milvus server.
+ */
 Status
 Server::Start() {
     if (daemonized_ != 0) {
@@ -316,7 +319,8 @@ Server::Start() {
 
         server::Metrics::GetInstance().Init();
         server::SystemInfo::GetInstance().Init();
-
+        
+        /// Starts core service after finished init and preprocessing job.
         return StartService();
     } catch (std::exception& ex) {
         std::string str = "Milvus server encounter exception: " + std::string(ex.what());
@@ -386,6 +390,10 @@ Server::LoadConfig() {
     return milvus::Status::OK();
 }
 
+/**
+ * @brief 
+ * Start milvus core service after finished some initialization and pre-setting job.
+ */
 Status
 Server::StartService() {
     Status stat;
@@ -403,6 +411,9 @@ Server::StartService() {
         goto FAIL;
     }
 
+    /// Put the clients' rpc request into a 'job queue', and waiting the 'scheduler' 
+    /// to handle them, after one request's corresponding job has been finished, the 
+    /// response will be sent to client by grpc server. 
     grpc::GrpcServer::GetInstance().Start();
     web::WebServer::GetInstance().Start();
 

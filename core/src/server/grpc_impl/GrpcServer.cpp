@@ -61,6 +61,9 @@ class NoReusePortOption : public ::grpc::ServerBuilderOption {
     }
 };
 
+/**
+ * @brief Starts milvus grpc server.
+ */
 void
 GrpcServer::Start() {
     thread_ptr_ = std::make_shared<std::thread>(&GrpcServer::StartService, this);
@@ -75,6 +78,9 @@ GrpcServer::Stop() {
     }
 }
 
+/**
+ * @brief Running milvus grpc core service as a thread.
+ */
 Status
 GrpcServer::StartService() {
     SetThreadName("grpcserv_thread");

@@ -89,6 +89,10 @@ class JobMgrInst {
 
 class OptimizerInst {
  public:
+    /**
+     * @brief
+     * Gets an `OptimizerPtr` instance which can `run` a `TaskPtr` object.
+     */
     static OptimizerPtr
     GetInstance() {
         if (instance == nullptr) {
@@ -133,6 +137,7 @@ class OptimizerInst {
                     LOG_SERVER_DEBUG_ << LogOut("add fpga ");
                 }
 #endif
+                /// Cast `Pass` to `FallbackPass`.
                 pass_list.push_back(std::make_shared<FallbackPass>());
                 instance = std::make_shared<Optimizer>(pass_list);
             }

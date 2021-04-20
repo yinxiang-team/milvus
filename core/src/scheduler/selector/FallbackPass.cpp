@@ -20,6 +20,10 @@ void
 FallbackPass::Init() {
 }
 
+/**
+ * @brief
+ * For Delete task, return false.
+ */
 bool
 FallbackPass::Run(const TaskPtr& task) {
     auto task_type = task->Type();

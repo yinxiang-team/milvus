@@ -115,6 +115,7 @@ RequestScheduler::TakeToExecute(RequestQueuePtr request_queue) {
     }
 
     while (true) {
+        /// Get first request/task from `RequestQueuePtr`
         BaseRequestPtr request = request_queue->TakeRequest();
         if (request == nullptr) {
             LOG_SERVER_ERROR_ << "Take null from request queue, stop thread";

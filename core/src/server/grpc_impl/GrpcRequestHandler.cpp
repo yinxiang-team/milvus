@@ -725,6 +725,9 @@ GrpcRequestHandler::Cmd(::grpc::ServerContext* context, const ::milvus::grpc::Co
     return ::grpc::Status::OK;
 }
 
+/**
+ * @brief Delete record by id.
+ */
 ::grpc::Status
 GrpcRequestHandler::DeleteByID(::grpc::ServerContext* context, const ::milvus::grpc::DeleteByIDParam* request,
                                ::milvus::grpc::Status* response) {
@@ -738,6 +741,7 @@ GrpcRequestHandler::DeleteByID(::grpc::ServerContext* context, const ::milvus::g
     }
 
     // step 2: delete vector
+    /// `request_handler_` is an `RequestHandler` object.
     Status status = request_handler_.DeleteByID(GetContext(context), request->collection_name(), vector_ids);
 
     LOG_SERVER_INFO_ << LogOut("Request [%s] %s end.", GetContext(context)->RequestID().c_str(), __func__);

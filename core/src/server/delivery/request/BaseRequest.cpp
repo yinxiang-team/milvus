@@ -104,6 +104,8 @@ BaseRequest::PreExecute() {
 
 Status
 BaseRequest::Execute() {
+    /// Here, calling `BaseRequest`'s generic class's `OnExecute`, 
+    /// for example, `DeleteByIDRequest`. 
     status_ = OnExecute();
     Done();
     return status_;
