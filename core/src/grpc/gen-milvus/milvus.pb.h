@@ -3773,6 +3773,7 @@ class DeleteByIDParam :
 
   enum : int {
     kIdArrayFieldNumber = 2,
+    kPartitionTagArrayFieldNumber = 3,
     kCollectionNameFieldNumber = 1,
   };
   // repeated int64 id_array = 2;
@@ -3785,6 +3786,23 @@ class DeleteByIDParam :
       id_array() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
       mutable_id_array();
+
+  // repeated string partition_tag_array = 3;
+  int partition_tag_array_size() const;
+  void clear_partition_tag_array();
+  const std::string& partition_tag_array(int index) const;
+  std::string* mutable_partition_tag_array(int index);
+  void set_partition_tag_array(int index, const std::string& value);
+  void set_partition_tag_array(int index, std::string&& value);
+  void set_partition_tag_array(int index, const char* value);
+  void set_partition_tag_array(int index, const char* value, size_t size);
+  std::string* add_partition_tag_array();
+  void add_partition_tag_array(const std::string& value);
+  void add_partition_tag_array(std::string&& value);
+  void add_partition_tag_array(const char* value);
+  void add_partition_tag_array(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& partition_tag_array() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_partition_tag_array();
 
   // string collection_name = 1;
   void clear_collection_name();
@@ -3804,6 +3822,7 @@ class DeleteByIDParam :
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 > id_array_;
   mutable std::atomic<int> _id_array_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> partition_tag_array_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr collection_name_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_milvus_2eproto;
@@ -10819,6 +10838,71 @@ inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
 DeleteByIDParam::mutable_id_array() {
   // @@protoc_insertion_point(field_mutable_list:milvus.grpc.DeleteByIDParam.id_array)
   return &id_array_;
+}
+
+// repeated string partition_tag_array = 3;
+inline int DeleteByIDParam::partition_tag_array_size() const {
+  return partition_tag_array_.size();
+}
+inline void DeleteByIDParam::clear_partition_tag_array() {
+  partition_tag_array_.Clear();
+}
+inline const std::string& DeleteByIDParam::partition_tag_array(int index) const {
+  // @@protoc_insertion_point(field_get:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  return partition_tag_array_.Get(index);
+}
+inline std::string* DeleteByIDParam::mutable_partition_tag_array(int index) {
+  // @@protoc_insertion_point(field_mutable:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  return partition_tag_array_.Mutable(index);
+}
+inline void DeleteByIDParam::set_partition_tag_array(int index, const std::string& value) {
+  // @@protoc_insertion_point(field_set:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  partition_tag_array_.Mutable(index)->assign(value);
+}
+inline void DeleteByIDParam::set_partition_tag_array(int index, std::string&& value) {
+  // @@protoc_insertion_point(field_set:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  partition_tag_array_.Mutable(index)->assign(std::move(value));
+}
+inline void DeleteByIDParam::set_partition_tag_array(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  partition_tag_array_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline void DeleteByIDParam::set_partition_tag_array(int index, const char* value, size_t size) {
+  partition_tag_array_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline std::string* DeleteByIDParam::add_partition_tag_array() {
+  // @@protoc_insertion_point(field_add_mutable:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  return partition_tag_array_.Add();
+}
+inline void DeleteByIDParam::add_partition_tag_array(const std::string& value) {
+  partition_tag_array_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline void DeleteByIDParam::add_partition_tag_array(std::string&& value) {
+  partition_tag_array_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline void DeleteByIDParam::add_partition_tag_array(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  partition_tag_array_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline void DeleteByIDParam::add_partition_tag_array(const char* value, size_t size) {
+  partition_tag_array_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:milvus.grpc.DeleteByIDParam.partition_tag_array)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+DeleteByIDParam::partition_tag_array() const {
+  // @@protoc_insertion_point(field_list:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  return partition_tag_array_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+DeleteByIDParam::mutable_partition_tag_array() {
+  // @@protoc_insertion_point(field_mutable_list:milvus.grpc.DeleteByIDParam.partition_tag_array)
+  return &partition_tag_array_;
 }
 
 // -------------------------------------------------------------------
