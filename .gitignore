@@ -33,3 +33,6 @@ cov_html/
 shards/all_in_one_with_mysql/metadata/
 shards/mishards/.env
 *.swp
+
+# vim trash
+*.un~
