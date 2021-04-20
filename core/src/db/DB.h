@@ -106,7 +106,13 @@ class DB {
     DeleteVector(const std::string& collection_id, IDNumber vector_id) = 0;
 
     virtual Status
+    DeleteVector(const std::string& collection_id, IDNumber vector_id, const std::vector<std::string>& partition_tags) = 0;
+
+    virtual Status
     DeleteVectors(const std::string& collection_id, IDNumbers vector_ids) = 0;
+
+    virtual Status
+    DeleteVectors(const std::string& collection_id, IDNumbers vector_ids, const std::vector<std::string>& partition_tags) = 0;
 
     virtual Status
     Flush(const std::string& collection_id) = 0;

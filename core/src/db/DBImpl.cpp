@@ -982,6 +982,14 @@ DBImpl::DeleteVector(const std::string& collection_id, IDNumber vector_id) {
 }
 
 Status
+DBImpl::DeleteVector(const std::string& collection_id, IDNumber vector_id, 
+        const std::vector<std::string>& partition_tag) {
+    IDNumbers ids;
+    ids.push_back(vector_id);
+    return DeleteVectors(collection_id, ids, partition_tag);
+}
+
+Status
 DBImpl::DeleteVectors(const std::string& collection_id, IDNumbers vector_ids) {
     if (!initialized_.load(std::memory_order_acquire)) {
         return SHUTDOWN_ERROR;
@@ -998,6 +1006,36 @@ DBImpl::DeleteVectors(const std::string& collection_id, IDNumbers vector_ids) {
         record.collection_id = collection_id;
         record.ids = vector_ids.data();
         record.length = vector_ids.size();
+
+        status = ExecWalRecord(record);
+    }
+
+    return status;
+}
+
+Status
+DBImpl::DeleteVectors(const std::string& collection_id, IDNumbers vector_ids, 
+        const std::vector<std::string>& partition_tags) {
+    if (!initialized_.load(std::memory_order_acquire)) {
+        return SHUTDOWN_ERROR;
+    }
+
+    Status status;
+    if (options_.wal_enable_) {
+        wal_mgr_->DeleteById(collection_id, vector_ids);
+        swn_wal_.Notify();
+    } else {
+        wal::MXLogRecord record;
+        record.lsn = 0;  // need to get from meta ?
+        record.type = wal::MXLogType::Delete;
+        record.collection_id = collection_id;
+        record.ids = vector_ids.data();
+        record.length = vector_ids.size();
+
+        record.partition_tag = "";
+        if (record.data_size == 1 && partition_tags.size() == 1) {
+            record.partition_tag = partition_tags[0];
+        } 
 
         status = ExecWalRecord(record);
     }
@@ -2628,7 +2666,12 @@ DBImpl::ExecWalRecord(const wal::MXLogRecord& record) {
             std::vector<std::string> collection_ids{record.collection_id};
             for (auto& partition : partition_array) {
                 auto& partition_collection_id = partition.collection_id_;
-                collection_ids.emplace_back(partition_collection_id);
+                /// TODO: Think twice
+                if (record.partition_tag.size() < 1 || record.length > 1) {
+                    collection_ids.emplace_back(partition_collection_id);
+                } else if (partition_collection_id == record.partition_tag) {
+                    collection_ids.emplace_back(partition_collection_id);
+                }
             }
 
             if (record.length == 1) {

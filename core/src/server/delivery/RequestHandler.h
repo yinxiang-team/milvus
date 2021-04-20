@@ -88,6 +88,10 @@ class RequestHandler {
                const std::vector<int64_t>& vector_ids);
 
     Status
+    DeleteByID(const std::shared_ptr<Context>& context, const std::string& collection_name,
+               const std::vector<int64_t>& vector_ids, const std::vector<std::string>& partition_list);
+
+    Status
     PreloadCollection(const std::shared_ptr<Context>& context, const std::string& collection_name,
                       const std::vector<std::string>& partition_tags);
 

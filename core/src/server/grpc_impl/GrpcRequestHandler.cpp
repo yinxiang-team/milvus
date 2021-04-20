@@ -737,8 +737,15 @@ GrpcRequestHandler::DeleteByID(::grpc::ServerContext* context, const ::milvus::g
         vector_ids.push_back(request->id_array(i));
     }
 
+    // step1.1: prepare id's partition array
+    std::vector<std::string> partitions;
+    std::copy(request->partition_tag_array().begin(), request->partition_tag_array().end(),
+            std::back_inserter(partitions));
+
     // step 2: delete vector
-    Status status = request_handler_.DeleteByID(GetContext(context), request->collection_name(), vector_ids);
+    /// TODO: Update `request_handler_.DeleteByID` to support delete by partitions.
+    ///Status status = request_handler_.DeleteByID(GetContext(context), request->collection_name(), vector_ids);
+    Status status = request_handler_.DeleteByID(GetContext(context), request->collection_name(), vector_ids, partitions);
 
     LOG_SERVER_INFO_ << LogOut("Request [%s] %s end.", GetContext(context)->RequestID().c_str(), __func__);
     SET_RESPONSE(response, status, context);
