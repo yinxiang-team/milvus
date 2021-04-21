@@ -683,8 +683,8 @@ class ServiceHandler(milvus_pb2_grpc.MilvusServiceServicer):
             vector_id_array=ids
         )
 
-    def _delete_by_id(self, collection_name, id_array):
-        return self.router.connection().delete_entity_by_id(collection_name, id_array)
+    def _delete_by_id(self, collection_name, id_array, partition_tag):
+        return self.router.connection().delete_entity_by_id(collection_name, id_array, partition_tag)
 
     @mark_grpc_method
     def DeleteByID(self, request, context):
@@ -695,9 +695,9 @@ class ServiceHandler(milvus_pb2_grpc.MilvusServiceServicer):
             return status_pb2.Status(error_code=_status.code,
                                      reason=_status.message)
 
-        _collection_name, _ids = unpacks
+        _collection_name, _ids, _partition_tag = unpacks
         logger.info('DeleteByID {}'.format(_collection_name))
-        _status = self._delete_by_id(_collection_name, _ids)
+        _status = self._delete_by_id(_collection_name, _ids, _partition_tag)
 
         return status_pb2.Status(error_code=_status.code,
                                  reason=_status.message)

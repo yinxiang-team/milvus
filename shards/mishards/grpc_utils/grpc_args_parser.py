@@ -114,8 +114,9 @@ class GrpcArgsParser(object):
     def parse_proto_DeleteByIDParam(cls, param):
         _collection_name = param.collection_name
         _id_array = list(param.id_array)
+        _partition_tag = param.partition_tag
 
-        return _collection_name, _id_array
+        return _collection_name, _id_array, partition_tag
 
     @classmethod
     @error_status
